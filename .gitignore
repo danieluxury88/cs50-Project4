@@ -4,3 +4,4 @@
 /project3/__pycache__/
 *.log
 *.sqlite3
+*.pyc
