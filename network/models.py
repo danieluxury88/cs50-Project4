@@ -1,11 +1,28 @@
 from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
 from django.db import models
+
+from . import constants
 
 import time
 
 
 class User(AbstractUser):
-    pass
+    class UserType(models.TextChoices):
+        SUPERUSER = 'SU', _('Superuser')
+        USER = 'US', _('User')
+        GUEST = 'GE', _('Guest')
+
+    email = models.EmailField(unique=True)
+    native_name = models.CharField(max_length=5)
+    phone_no = models.CharField(max_length=10)
+    user_type = models.CharField(max_length=2, choices=UserType.choices, default=UserType.USER)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
+    def __str__(self):
+        return "{}".format(self.email)
 
 
 class Post(models.Model):
@@ -21,8 +38,12 @@ class Post(models.Model):
 class Reaction(models.Model):
     post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="writer")
     author = models.ForeignKey("User", on_delete=models.CASCADE, related_name="reactions")
-    value = models.IntegerField()
+    value = models.IntegerField(choices=constants.REACTION_TYPE_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        # Add a unique constraint on the user and post fields to ensure that a user can only react once to a post
+        unique_together = ('post', 'author')
 
     def __str__(self):
         return f'{self.author} reacted: {self.value} on {self.post.content} by {self.post.author}'
@@ -30,7 +51,7 @@ class Reaction(models.Model):
 
 class Follower(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="followers")
-    following = models.ManyToManyField("User", related_name="following")
+    follower = models.ForeignKey("User", on_delete=models.CASCADE, related_name="following")
 
     def __str__(self):
-        return f'{self.user} is following {self.following.user}'
+        return f'{self.user} is being followed by {self.follower}'
