@@ -34,6 +34,14 @@ class Post(models.Model):
     def __str__(self):
         return f'{self.author} said: {self.content} on {self.timestamp.strftime("%d-%m-%Y %H:%M:%S")} (edited:{self.edited})'
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "author": self.author,
+            "content": self.content,
+            "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
+        }
+
 
 class Reaction(models.Model):
     post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="writer")

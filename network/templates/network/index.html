@@ -1,5 +1,21 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
-    TODO
+     <div id="profile_view">
+     </div>
+
+    <div id ="posts_view">
+    </div>
+
+<!--    {% for post in posts %}-->
+<!--        <h1>{{post.author}}</h1>-->
+<!--        <h1>{{post.content}}</h1>-->
+<!--        <h1>{{post.timestamp}}</h1>-->
+<!--        <br>-->
+<!--    {% endfor %}-->
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/posts.js' %}"></script>
 {% endblock %}
