@@ -6,7 +6,24 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('following_posts_btn').addEventListener('click', () => show_current_view('posts_view', "following"));
 
     show_default_page();
+
+    //TEST
+    document.getElementById('test_btn').addEventListener('click', () => test_function());
 });
+
+function test_function(){
+    console.log("Test button");
+    fetch('/test')
+      .then(test_response => test_response.json())
+      .then(test_data =>  {
+        console.log(test_data);
+        console.log(test_data.author);
+        console.log(test_data.content);
+        console.log(test_data.timestamp);
+      })
+      .catch(error => console.error(error));
+
+}
 
 
 function highlight_selected_item(btn) {

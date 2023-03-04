@@ -4,7 +4,7 @@ from .models import User, Post, Reaction, Follower
 from .constants import *
 
 
-def get_post(post_id):
+def get_post():
     return Post.objects.first()
 
 
@@ -29,10 +29,6 @@ def edit_post(post, user, content):
         post.content = content
         post.save()
     return post
-
-
-def get_post(post):
-    return Post.objects.get(id=post)
 
 
 def get_all_posts():

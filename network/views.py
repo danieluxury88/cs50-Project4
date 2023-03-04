@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import User
 from .utils import *
@@ -93,5 +94,10 @@ def profile(request, profile_id):
 
     if request.method == "GET":
         return JsonResponse([post.serialize() for post in posts], safe=False)
+
+
+def test(request):
+    one_post = get_post()
+    return JsonResponse(one_post.serialize())
 
 
