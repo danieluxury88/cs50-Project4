@@ -16,5 +16,6 @@ urlpatterns = [
     # API Routes
     path("post", views.post, name="post"),
     path("feed/<str:section>", views.feed, name="feed"),
-    path("profile/<int:profile_id>", views.profile, name="profile"),
+    path("profile/", views.own_profile, name="own_profile"),
+    path("profile/<int:profile_id>", views.user_profile, name="user_profile"),
 ]

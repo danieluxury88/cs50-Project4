@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import User
@@ -75,26 +76,29 @@ def post(request):
 def feed(request, section):
     if (section == 'all'):
         posts = get_all_posts()
-        print('all posts')
-    else:
-        print(request.user)
-        # posts = get_all_posts()
-        posts = get_all_posts_from_following(request.user)
-        print('all posts')
-
-    context = {'posts': posts}
-    return render(request, "network/index.html", context)
+        if request.method == "GET":
+            return JsonResponse([post.serialize() for post in posts], safe=False)
+    if (section == 'following'):
+        user = request.user
+        posts = get_all_posts_from_following(user)
+        if request.method == "GET":
+            return JsonResponse([post.serialize() for post in posts], safe=False)
 
 
-def profile(request, profile_id):
-    print('all posts')
-    posts = get_all_user_posts(request.user)
-    # context = {'posts': posts}
-    # return render(request, "network/index.html", context)
+def own_profile(request):
+    username = model_to_dict(request.user)
+    following = str(get_all_following(request.user).count())
+    followers = str(get_all_followers(request.user).count())
+    data = {'username': request.user.email, 'following': following, 'followers':followers}
 
     if request.method == "GET":
-        return JsonResponse([post.serialize() for post in posts], safe=False)
+        return JsonResponse(data, safe=False)
+    
 
+def user_profile(request, profile_id):    
+    posts = get_all_user_posts(request.user)
+    if request.method == "GET":
+        return JsonResponse([post.serialize() for post in posts], safe=False)
 
 def test(request):
     one_post = get_post()
